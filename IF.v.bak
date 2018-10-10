@@ -1,5 +1,5 @@
 module IF(input clock, input reset, output [31:0] instruction, output [31:0] pc_value);
-    reg [31:0] pc = 32'd0;
+    reg [31:0] pc;
 
     always @ (posedge clock, posedge reset)
     begin 

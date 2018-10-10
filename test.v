@@ -2,10 +2,10 @@
 
 module test();
 
-    wire clk=0, rst=0; 
+    reg clk=0, rst=0; 
     wire [31:0] ifid_pc, idexe_pc, exemem_pc, memwb_pc;
 
-    pipeline pl(clk, rst, ifid_pc, idexe_pc, exemem_pc, memwb_pc);
+    pipeline #(32) pl(clk, rst, ifid_pc, idexe_pc, exemem_pc, memwb_pc);
 
     initial begin 
         #50 

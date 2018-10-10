@@ -1,4 +1,4 @@
-module register #(parameter len) (input clock, input reset, input [len-1:0] input_value, output [len-1:0] output_value)
+module register #(parameter len = 32) (input clock, input reset, input [len-1:0] input_value, output reg [len-1:0] output_value);
 
     always @ (posedge clock, posedge reset)
     begin
