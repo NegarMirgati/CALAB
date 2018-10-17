@@ -15,6 +15,9 @@ module pipeline #(parameter LEN = 32)(input clock, input reset, output [6:0] ifi
     IF instFetch(clock, reset, instruction, pc); 
     
     IFID #(LEN) ifidreg(clock, reset, pc, instruction, ifid_pc_out, ifid_instruction_out);
+
+    ID instDecode(clock, reset, ifid_instruction_out);
+
     IDEXE #(LEN) idexereg(clock, reset, ifid_pc_out, ifid_instruction_out, idexe_pc_out, idexe_instruction_out);
     EXEMEM #(LEN) exememreg(clock, reset, idexe_pc_out, idexe_instruction_out, exemem_pc_out, exemem_instruction_out);
     MEMWB #(LEN) memwbreg(clock, reset, exemem_pc_out, exemem_instruction_out, memwb_pc_out, memwb_instruction_out);
