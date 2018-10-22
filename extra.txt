@@ -1,0 +1,21 @@
+SevenSegmentConverter sscIFID(ifid_pc_out[5:2], ss_ifid_pc);
+SevenSegmentConverter sscIDEXE(idexe_pc_out[5:2], ss_idexe_pc);
+SevenSegmentConverter sscEXEMEM(exemem_pc_out[5:2], ss_exemem_pc);
+SevenSegmentConverter sscMEMWB(memwb_pc_out[5:2], ss_memwb_pc);
+SevenSegmentConverter sscEXECMD(exe_cmd, ss_exe_cmd);
+
+
+	wire [6:0] ss_ifid_pc;
+    wire [6:0] ss_idexe_pc;
+    wire [6:0] ss_exemem_pc;
+    wire [6:0] ss_memwb_pc;
+
+
+module pipeline #(parameter LEN = 32)(input clock, input reset, output test_mem_read, output test_mem_write, output[3:0] test_exe_cmd, output [1:0] test_branch_type, output[4:0] test_src1, test_src2);
+
+	assign  test_mem_read = mem_read;
+	assign  test_mem_write = mem_write;
+	assign  test_exe_cmd =exe_cmd;
+	assign  test_branch_type = branch_type;
+	assign test_src1 = ifid_instruction_out[25:21];
+	assign test_src2 =  ifid_instruction_out[20:16];
