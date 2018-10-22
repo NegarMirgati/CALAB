@@ -1,9 +1,9 @@
 module Register_file (
 	input clk, 
 	input rst, 
-	input [4:0] src1; 
-	input [4:0] src2; 
-	input [4:0] dest;
+	input [4:0] src1,
+	input [4:0] src2,
+	input [4:0] dest,
 	input [31:0] Write_val, 
 	input Write_EN, 
 	output [31:0] reg1, 
@@ -12,7 +12,7 @@ module Register_file (
 	reg [31:0] regFile [31:0];
 	integer i;
 
-	always @ (negedge clk, rst)
+	always @ (negedge clk)
 	begin
 		if (rst) begin 
 			for(i=0; i<32; i = i+1) 
