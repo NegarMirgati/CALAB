@@ -11,12 +11,14 @@ module Register_file (
 );
 	reg [31:0] regFile [31:0];
 	integer i;
+	reg[31:0] cntr = 32'd0;
 
 	always @ (negedge clk)
 	begin
 		if (rst) begin 
 			for(i=0; i<32; i = i+1) 
-            	regFile[i] = i;
+            	regFile[i] = cntr;
+            	cntr = cntr + 32'd1;
 		end
 		else begin 
 			if (Write_EN) regFile[dest] = Write_val;
