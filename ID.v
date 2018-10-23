@@ -26,10 +26,11 @@ module ID (
 	                 .mem_write(mem_write),.mem_read(mem_read),.writeback_en(writeback_en),
 	                 .is_immediate(is_immediate));
 
-	Register_file reg_file(clock, reset, instruction[25:21], instruction[20:16], dest_wb, result_wb, write_enable, reg_out1, reg_out2);
-	SignExtend se(instruction[15:0], se_out);
-	MUX mux1 (reg_out2, se_out, is_immediate, alu_inp2);
-	MUX dest_mux (instruction[15:11], instruction[20:16], is_immediate,idexe_dest);
+	Register_file reg_file(.clk(clock), .rst(reset), .src1(instruction[25:21]),.src2(instruction[20:16]), 
+							.dest(dest_wb), .Write_val(result_wb), .Write_EN(write_enable), .reg1(reg_out1), .reg2(reg_out2));
+	SignExtend se(.input_value(instruction[15:0]),.extended(se_out));
+	MUX #(32) mux1 (.value1(reg_out2),.value2(se_out), .selector(is_immediate), .out_val(alu_inp2));
+	MUX #(5) dest_mux (.value1(instruction[15:11]),.value2(instruction[20:16]), .selector(is_immediate),.out_val(idexe_dest));
 	
 	assign alu_inp1 = reg_out1;
 	assign reg2 = reg_out2;
