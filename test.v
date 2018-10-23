@@ -3,9 +3,8 @@
 module test();
 
     reg clk=0, rst=0; 
-    wire [6:0] ifid_pc, idexe_pc, exemem_pc, memwb_pc, ss_exe_cmd;
 
-    pipeline #(32) pl(clk, rst, ifid_pc, idexe_pc, exemem_pc, memwb_pc, ss_exe_cmd);
+    pipeline #(32) pl(clk, rst);
 
     initial begin 
         #50 
