@@ -1,4 +1,4 @@
-module ROM(input clock, input [31:0] address, output reg [32:0] instruction);
+module ROM(input clock, input [31:0] address, output reg [31:0] instruction);
 
     reg [7:0] rom [1023:0]; 
     integer i;

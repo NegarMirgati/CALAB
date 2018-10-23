@@ -22,7 +22,7 @@ module ID (
   wire [31:0] se_out;
   
 	
-	Controller cUnit (.opcode(instruction[31:25]), .branch_type(br_type),.exe_cmd(exe_cmd),
+	Controller cUnit (.opcode(instruction[31:26]), .branch_type(br_type),.exe_cmd(exe_cmd),
 	                 .mem_write(mem_write),.mem_read(mem_read),.writeback_en(writeback_en),
 	                 .is_immediate(is_immediate));
 
