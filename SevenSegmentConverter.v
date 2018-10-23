@@ -10,9 +10,8 @@ module SevenSegmentConverter(input [3:0] inp_val, output reg [6:0] outval);
         4'b0110: outval = 7'b0000010; 
         4'b0111: outval = 7'b1111000; 
         4'b1000: outval = 7'b0000000; 
-        4'b1001: outval = 7'b0010000; 
-		  
-		  4'b1010: outval = 7'b0001000; 
+        4'b1001: outval = 7'b0010000;   
+		4'b1010: outval = 7'b0001000; 
         4'b1011: outval = 7'b0000011; 
         4'b1100: outval = 7'b1000110; 
         4'b1101: outval = 7'b0100001; 
