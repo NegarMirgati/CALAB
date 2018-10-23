@@ -22,13 +22,14 @@ module ID (
   wire [31:0] se_out;
   
 	
-	Controller cUnit (.opcode(instruction[31:25]), .branch_type(br_type),.exe_cmd(exe_cmd),
+	Controller cUnit (.opcode(instruction[31:26]), .branch_type(br_type),.exe_cmd(exe_cmd),
 	                 .mem_write(mem_write),.mem_read(mem_read),.writeback_en(writeback_en),
 	                 .is_immediate(is_immediate));
 
-	Register_file reg_file(.clk(clock), .rst(reset), .src1(instruction[25:21]),.src2(instruction[20:16]), 
-							.dest(dest_wb), .Write_val(result_wb), .Write_EN(write_enable), .reg1(reg_out1), .reg2(reg_out2));
+	Register_file reg_file(.clk(clock), .rst(reset), .src1(instruction[25:21]), .src2(instruction[20:16]), .dest(dest_wb), .Write_val(result_wb), .Write_EN(write_enable), .reg1(reg_out1), .reg2(reg_out2));
+	
 	SignExtend se(.input_value(instruction[15:0]),.extended(se_out));
+
 	MUX #(32) mux1 (.value1(reg_out2),.value2(se_out), .selector(is_immediate), .out_val(alu_inp2));
 	MUX #(5) dest_mux (.value1(instruction[15:11]),.value2(instruction[20:16]), .selector(is_immediate),.out_val(idexe_dest));
 	
