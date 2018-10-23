@@ -17,6 +17,7 @@ module pipeline #(parameter LEN = 32)(input clock, input reset);
     wire[4:0] idexe_dest;
 
     // IDEXE register wires
+    wire idexe_wb_en_out, idexe_mem_read_out,idexe_mem_write_out, idexe_flush_out;
     wire [LEN-1:0] idexe_pc_out, idexe_instruction_out;
     wire flush; 
     wire [1:0] idexe_branch_type_out;
@@ -30,8 +31,12 @@ module pipeline #(parameter LEN = 32)(input clock, input reset);
     wire branch_tacken;
 
     // EXEMEM register wires
-    wire [LEN-1:0] exemem_pc_out, exemem_instruction_out;
-    
+    wire [31:0] exemem_pc_out, exemem_instruction_out;
+    wire exemem_wb_en_out, exemem_mem_write_out, exemem_mem_read_out; 
+    wire [31:0] exemem_src2_val_out; 
+    wire [4:0] exemem_dest_out;
+    wire [31:0] exemem_alu_result_out;
+
     wire [LEN-1:0] memwb_pc_out, memwb_instruction_out;
 
     IF instFetch(.clock(clock), .reset(reset), .instruction(instruction), .pc_value(pc)); 
@@ -44,6 +49,8 @@ module pipeline #(parameter LEN = 32)(input clock, input reset);
                           .wb_en(wb_en), .mem_read(mem_read),.mem_write(mem_write), .flush(flush), .branch_type(branch_type),
                            .exe_cmd(exe_cmd), .reg2(reg_out2), .alu_inp1(alu_inp1), .alu_inp2(alu_inp2), 
                            .dest(idexe_dest), .pc_out(idexe_pc_out), .instruction_out(idexe_instruction_out),
+                           .wb_en_out(idexe_wb_en_out), .mem_read_out(idexe_mem_read_out), 
+                           .mem_write_out(idexe_mem_write_out), .flush_out(idexe_flush_out),
                            .branch_type_out(idexe_branch_type_out),.exe_cmd_out(idexe_exe_cmd_out),
                            .reg2_out(idexe_reg2_out), .alu_inp1_out(idexe_alu_inp1_out), .alu_inp2_out(idexe_alu_inp2_out),.dest_out(idexe_dest_out));
                           
@@ -52,15 +59,17 @@ module pipeline #(parameter LEN = 32)(input clock, input reset);
                 .val2(idexe_alu_inp2_out), val1(idexe_alu_inp1_out), 
                 .pc(idexe_pc_out), .exe_cmd(idexe_exe_cmd_out), .alu_result(alu_result), .branch_address(branch_address),
                 .branch_tacken(branch_tacken)); 
-
+                
                             
-    EXEMEM #(LEN) exememreg( .clock(clock), .reset(reset), .wb_en(), .mem_write(),
-            .mem_read(), .pc(idexe_pc_out), .instruction(idexe_instruction_out),
+    EXEMEM #(LEN) exememreg( .clock(clock), .reset(reset), .wb_en(idexe_wb_en_out), 
+            .mem_write(idexe_mem_write_out), .mem_read(idexe_mem_read_out), 
+            .pc(idexe_pc_out), .instruction(idexe_instruction_out),
             .src2_val(idexe_reg2_out), .dest(idexe_dest), .alu_result(alu_result),
             .pc_out(exemem_pc_out), .instruction_out(exemem_instruction_out),
-            .wb_en_out(), .mem_write_out(),
-            .mem_read_out(), .src2_val_out(), .dest_out(),
-            .alu_result_out());
+            .wb_en_out(exemem_wb_en_out), .mem_write_out(exemem_mem_write_out),
+            .mem_read_out(exemem_mem_read_out), .src2_val_out(exemem_src2_val_out), 
+            .dest_out(exemem_dest_out),
+            .alu_result_out(exemem_alu_result_out));
 
 
     MEMWB #(LEN) memwbreg(clock, reset, exemem_pc_out, exemem_instruction_out, memwb_pc_out, memwb_instruction_out);
