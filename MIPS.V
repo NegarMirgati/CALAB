@@ -307,6 +307,5 @@ wire [3:0] test_exe_cmd;
 wire [1:0] test_branch_type;
 wire[4:0] test_src1, test_src2;
 
-pipeline p(.clock(CLOCK_50), .reset(SW[0]), .test_mem_read(test_mem_read), .test_mem_write(test_mem_write), .test_exe_cmd(test_exe_cmd), .test_branch_type(test_branch_type), .test_src1(test_src1), .test_src2(test_src1));
-	
+pipeline p(.clock(CLOCK_50), .reset(SW[0]));
 endmodule

@@ -1,8 +1,9 @@
-module ROM(input clock, input [31:0] address, output reg [31:0] instruction);
+module ROM(input clock,input reset, input [31:0] address, output reg [31:0] instruction);
 
-    reg [7:0] rom [1023:0]; 
+    reg [7:0] rom [100:0]; 
     integer i;
-    initial begin 
+    always @(posedge clock) begin
+		if(reset) begin
 	 	{rom[0], rom[1], rom[2], rom[3]} = 32'b10000000000000010000011000001010;
 	 	{rom[4], rom[5], rom[6], rom[7]} = 32'b00000100000000010001000000000000;
 	 	{rom[8], rom[9], rom[10], rom[11]} = 32'b00001100000000010001100000000000;
@@ -17,9 +18,8 @@ module ROM(input clock, input [31:0] address, output reg [31:0] instruction);
 	 	{rom[44], rom[45], rom[46], rom[47]} =  32'b10010000001001010000000000000000;
 	 	{rom[48], rom[49], rom[50], rom[51]} = 32'b10100000101000000000000000000001; /* BEZ */
 	 	{rom[52], rom[53], rom[54], rom[55]}  = 32'b00100000101000010011100000000000; /* XOR */
-	 	
-	 	
-    end 
+		end
+	end
 
     always @ (posedge clock)
     begin 

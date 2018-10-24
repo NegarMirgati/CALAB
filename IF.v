@@ -13,7 +13,7 @@ module IF(input clock, input reset, input [31:0] branch_address, input branch_ta
         else pc = nextpc;
     end
 
-    ROM rom (clock, pc, instruction);
+    ROM rom (clock, reset, pc, instruction);
     assign pc_value = pcplus4;
 
 endmodule

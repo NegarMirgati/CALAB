@@ -1,37 +1,43 @@
 module Controller(input [5:0] opcode, output reg[1:0] branch_type, output reg [3:0] exe_cmd, output reg mem_write, output reg mem_read, output reg writeback_en, output reg is_immediate);
 
 	always @ (opcode) begin
+	{mem_read, mem_write, writeback_en, exe_cmd, branch_type} = 9'd0;
     case(opcode)
 			6'd1 : begin  //addition
-			  mem_write = 1'd1;
+			  mem_write = 1'd0;
 			  exe_cmd = 4'd0;
 			  is_immediate = 1'd0;
+			  writeback_en = 1'd1;
 			  end
 			  
 			6'd3 : begin  // subtraction
-			 mem_write = 1'd1;
+			 mem_write = 1'd0;
 			 exe_cmd = 4'd2;
 			 is_immediate = 1'd0;
+			 writeback_en = 1'd1;
 			 end
 			 
 			6'd5: begin  // And
-			 mem_write = 1'd1;
+			 mem_write = 1'd0;
 			 exe_cmd = 4'b0100;
 			 is_immediate = 1'd0;
+			 writeback_en = 1'd1;
 			 end
 			
 			6'd6 : begin // OR
-			 mem_write = 1'd1;
+			 mem_write = 1'd0;
 			 mem_read = 1'd0;
 			 exe_cmd = 4'b0101;
 			 is_immediate = 1'd0;
+			 writeback_en = 1'd1;
 			 end
 			 
 			6'd7 : begin // NOR
-			 mem_write = 1'd1;
+			 mem_write = 1'd0;
 			 mem_read = 1'd0;
 			 exe_cmd = 4'b0110;
 			 is_immediate = 1'b0;
+			 writeback_en = 1'd1;
 			 end
 			 
 			6'd8 : begin // XOR
@@ -39,6 +45,7 @@ module Controller(input [5:0] opcode, output reg[1:0] branch_type, output reg [3
 			 mem_read = 1'b0;
 			 exe_cmd = 4'b0111;
 			 is_immediate = 1'b0;
+			 writeback_en = 1'd1;
 			 end
 			 
 			6'd9 : begin // SLA
@@ -46,6 +53,7 @@ module Controller(input [5:0] opcode, output reg[1:0] branch_type, output reg [3
 			 mem_read = 1'd0;
 			 exe_cmd = 4'b1000;
 			 is_immediate = 1'b0;
+			 writeback_en = 1'd1;
 			 end
 			 
 			6'd10 : begin // SLL
@@ -53,6 +61,7 @@ module Controller(input [5:0] opcode, output reg[1:0] branch_type, output reg [3
 			 mem_read = 1'd0;
 			 exe_cmd = 4'b1000;
 			 is_immediate = 1'b0;
+			 writeback_en = 1'd1;
 			 end
 			
 			6'd11 : begin // SRA
@@ -60,6 +69,7 @@ module Controller(input [5:0] opcode, output reg[1:0] branch_type, output reg [3
 			 mem_read = 1'd0;
 			 exe_cmd = 4'b1001;
 			 is_immediate = 1'b0;
+			 writeback_en = 1'd1;
 			 end 
 			 
 			6'd12 : begin // SRL
@@ -67,6 +77,7 @@ module Controller(input [5:0] opcode, output reg[1:0] branch_type, output reg [3
 			 mem_read = 1'b0;
 			 exe_cmd = 4'b1010;
 			 is_immediate = 1'b0;
+			 writeback_en = 1'd1;
 			 end
 			 
 			6'd32 : begin // ADDI
@@ -74,6 +85,7 @@ module Controller(input [5:0] opcode, output reg[1:0] branch_type, output reg [3
 			 mem_read = 1'b0;
 			 exe_cmd = 4'b0000;
 			 is_immediate = 1'b1;
+			 writeback_en = 1'd1;
 			 end
 			 
 			6'd33 : begin  // SUBI
@@ -81,6 +93,7 @@ module Controller(input [5:0] opcode, output reg[1:0] branch_type, output reg [3
 			 mem_read = 1'b0;
 			 exe_cmd = 4'b0010;
 			 is_immediate = 1'b1;
+			 writeback_en = 1'd1;
 			 end
 			 
 			6'd36 : begin // LD
@@ -88,6 +101,7 @@ module Controller(input [5:0] opcode, output reg[1:0] branch_type, output reg [3
 			 mem_write = 1'b0;
 			 exe_cmd = 4'b0000;
 			 is_immediate = 1'b0;
+			 writeback_en = 1'd1;
 			 end
 			 
 			6'd37 : begin // ST
