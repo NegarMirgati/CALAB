@@ -39,7 +39,7 @@ module pipeline #(parameter LEN = 32)(input clock, input reset);
 
     wire [LEN-1:0] memwb_pc_out, memwb_instruction_out;
 
-    IF instFetch(.clock(clock), .reset(reset), .instruction(instruction), .pc_value(pc)); 
+    IF instFetch(.clock(clock), .reset(reset), .instruction(instruction), .branch_address(branch_address), .branch_tacken(branch_tacken), .pc_value(pc)); 
     
     IFID #(LEN) ifidreg(.clock(clock), .reset(reset), .pc(pc), .instruction(instruction), .pc_out(ifid_pc_out), .instruction_out(ifid_instruction_out));
 
