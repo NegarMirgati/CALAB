@@ -6,7 +6,7 @@ module IDEXE #(parameter len)(input clock, input reset, input [len-1:0] pc, inpu
                               input [31:0] alu_inp1, alu_inp2,
                               input [4:0] dest, 
                               output [len-1:0] pc_out, output [len-1:0] instruction_out,
-                              output wb_en_out, mem_read_out, mem_write_out, flush_out
+                              output wb_en_out, mem_read_out, mem_write_out, flush_out,
                               output [1:0] branch_type_out,
                               output [3:0] exe_cmd_out,
                               output [31:0] reg2_out,

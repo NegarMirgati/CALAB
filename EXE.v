@@ -4,13 +4,13 @@ module EXE(
 	input [31:0] val2, val1, 
 	input [31:0] pc, 
 	input [3:0] exe_cmd,
-	output reg [31:0] alu_result, 
+	output [31:0] alu_result, 
 	output [31:0] branch_address,
-	output branch_tacken
+	output branch_taken
 	);
-
-	Adder pc_adder (.value1(val2), .value2(pc), .out_val(branch_address));
+  wire[31:0] shifted_val2 = val2 << 2;
+	Adder pc_adder (.value1(shifted_val2), .value2(pc), .out_val(branch_address));
 	ALU exe_alu (.input_val1(val1), .input_val2(val2), .exe_cmd(exe_cmd), .output_val(alu_result));
-	ConditionCheck cc (.val1(val1), .src2_val(src2_val), .branch_type(branch_type), .branch_tacken(branch_tacken)); 
+	ConditionCheck cc (.val1(val1), .src2_val(src2_val), .branch_type(branch_type), .branch_taken(branch_taken)); 
 
 endmodule

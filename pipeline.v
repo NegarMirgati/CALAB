@@ -26,9 +26,9 @@ module pipeline #(parameter LEN = 32)(input clock, input reset);
     wire [4:0] idexe_dest_out;
 
     // EXE wires
-    reg [31:0] alu_result;
+    wire [31:0] alu_result;
     wire [31:0] branch_address;
-    wire branch_tacken;
+    wire branch_taken;
 
     // EXEMEM register wires
     wire [31:0] exemem_pc_out, exemem_instruction_out;
@@ -39,7 +39,7 @@ module pipeline #(parameter LEN = 32)(input clock, input reset);
 
     wire [LEN-1:0] memwb_pc_out, memwb_instruction_out;
 
-    IF instFetch(.clock(clock), .reset(reset), .instruction(instruction), .branch_address(branch_address), .branch_tacken(branch_tacken), .pc_value(pc)); 
+    IF instFetch(.clock(clock), .reset(reset), .instruction(instruction), .branch_address(branch_address), .branch_taken(branch_taken), .pc_value(pc)); 
     
     IFID #(LEN) ifidreg(.clock(clock), .reset(reset), .pc(pc), .instruction(instruction), .pc_out(ifid_pc_out), .instruction_out(ifid_instruction_out));
 
@@ -57,9 +57,9 @@ module pipeline #(parameter LEN = 32)(input clock, input reset);
                           
 
     EXE execution_stage (.branch_type(idexe_branch_type_out), .src2_val(idexe_reg2_out),
-                .val2(idexe_alu_inp2_out), val1(idexe_alu_inp1_out), 
+                .val2(idexe_alu_inp2_out), .val1(idexe_alu_inp1_out), 
                 .pc(idexe_pc_out), .exe_cmd(idexe_exe_cmd_out), .alu_result(alu_result), .branch_address(branch_address),
-                .branch_tacken(branch_tacken)); 
+                .branch_taken(branch_taken)); 
 
                             
     EXEMEM #(LEN) exememreg( .clock(clock), .reset(reset), .wb_en(idexe_wb_en_out), 

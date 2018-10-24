@@ -9,8 +9,10 @@ module test();
     initial begin 
         #50 
         rst = 1; 
-        #100
-        clk = ~clk; 
+        #1000
+        clk = ~clk;
+        #1000 
+        clk = ~clk;
         #50
         rst = 0;   
         repeat(1000) #1000 clk = ~clk;
