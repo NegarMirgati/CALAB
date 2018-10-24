@@ -11,5 +11,6 @@ module EXE(
 
 	Adder pc_adder (.value1(val2), .value2(pc), .out_val(branch_address));
 	ALU exe_alu (.input_val1(val1), .input_val2(val2), .exe_cmd(exe_cmd), .output_val(alu_result));
+	ConditionCheck cc (.val1(val1), .src2_val(src2_val), .branch_type(branch_type), .branch_tacken(branch_tacken)); 
 
 endmodule
