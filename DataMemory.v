@@ -17,7 +17,7 @@ module DataMemory(
     always @ (posedge clock)
     begin 
         if(mem_r_en) data = {rom[address], rom[address+1], rom[address+2], rom[address+3]};
-        if(mem_w_eb) {rom[address], rom[address+1], rom[address+2], rom[address+3]} = write_data ;
+        if(mem_w_en) {rom[address], rom[address+1], rom[address+2], rom[address+3]} = write_data ;
     end 
 
 endmodule 

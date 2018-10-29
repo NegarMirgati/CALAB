@@ -7,7 +7,7 @@ module IFID #(parameter len) (
 	output [len-1:0] pc_out, 
 	output [len-1:0] instruction_out);
 
-    register #(len) IFID_PC(clock, reset, pc, pc_out);
-    register #(len) IFID_INST(clock, reset, instruction, instruction_out);
+    register_f #(len) IFID_PC(.clock(clock), .reset(reset), .flush(flush), .input_value(pc), .output_value(pc_out));
+    register_f #(len) IFID_INST(.clock(clock), .reset(reset), .flush(flush), .input_value(instruction), .output_value(instruction_out));
 
 endmodule

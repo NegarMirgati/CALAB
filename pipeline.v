@@ -43,9 +43,11 @@ module pipeline #(parameter LEN = 32)(input clock, input reset);
     wire [31:0] memwb_alu_result, memwb_memory_result;
     wire memwb_mem_r_en;
     wire [4:0] memwb_dest;
+    wire memwb_wb_en_out;
 
     // WB wires 
     wire [31:0] result_wb;
+
 
     assign flush = branch_taken;
 
@@ -93,9 +95,12 @@ module pipeline #(parameter LEN = 32)(input clock, input reset);
 
     MEMWB #(LEN) memwbreg(.clock(clock), .reset(reset), .wb_en(exemem_wb_en_out), .mem_r_en(exemem_mem_write_out), .memory_data(memory_result), .dest(exemem_dest_out), 
     .alu_result_out(memwb_alu_result), 
+    .alu_result(exemem_alu_result_out), 
     .memory_result_out(memwb_memory_result),
     .mem_r_en_out(memwb_mem_r_en), 
+    .wb_en_out(memwb_wb_en_out),
     .dest_out(memwb_dest));
+    
 
     WB write_back_stage(.mem_r_en(memwb_mem_r_en), 
         .alu_result(memwb_alu_result), 
@@ -103,5 +108,6 @@ module pipeline #(parameter LEN = 32)(input clock, input reset);
         .result_wb(result_wb));
 
     assign dest_wb = memwb_dest;
+    assign wb_writeback_en = memwb_wb_en_out;
 
 endmodule
