@@ -5,7 +5,7 @@ module MEM(
 	input mem_r_en, 
 	input [31:0] alu_result, 
 	input [31:0] ST_value, 
-	output [31:0] memory_result, 
+	output [31:0] memory_result
 );
 	
 	wire [31:0] address;
