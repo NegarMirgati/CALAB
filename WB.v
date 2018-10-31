@@ -5,6 +5,6 @@ module WB(
 	output [31:0] result_wb
 );
 
-	MUX wb_m(.value1(memory_result), .value2(alu_result),  .selector(mem_r_en), .out_val(result_wb));
+	MUX wb_m(.value2(memory_result), .value1(alu_result),  .selector(mem_r_en), .out_val(result_wb));
 
 endmodule

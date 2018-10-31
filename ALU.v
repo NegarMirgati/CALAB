@@ -10,7 +10,7 @@ module ALU (
 			4'b0010: output_val <= input_val1 - input_val2; 
 			4'b0100: output_val <= input_val1 & input_val2; 
 			4'b0101: output_val <= input_val1 | input_val2; 
-			4'b0110: output_val <= input_val1 - input_val2; // check NOR
+			4'b0110: output_val <= ~(input_val1 | input_val2); // check NOR
 			4'b0111: output_val <= input_val1 ^ input_val2; 
 			4'b1000: output_val <= input_val1 << input_val2; 
 			4'b1001: output_val <= input_val1 >>> input_val2; 

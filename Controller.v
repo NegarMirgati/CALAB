@@ -100,7 +100,7 @@ module Controller(input [5:0] opcode, output reg[1:0] branch_type, output reg [3
 			 mem_read = 1'b1;
 			 mem_write = 1'b0;
 			 exe_cmd = 4'b0000;
-			 is_immediate = 1'b0;
+			 is_immediate = 1'b1;
 			 writeback_en = 1'd1;
 			 end
 			 
@@ -108,7 +108,7 @@ module Controller(input [5:0] opcode, output reg[1:0] branch_type, output reg [3
 			 mem_read = 1'b0;
 			 mem_write = 1'b1;
 			 exe_cmd = 4'b0010;
-			 is_immediate = 1'b0;
+			 is_immediate = 1'b1;
 			 end
 			 
 			6'd40 : begin // BEZ

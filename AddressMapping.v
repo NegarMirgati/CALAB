@@ -3,7 +3,6 @@ module AddressMapping(
 	output [31:0] address
 );
 	
-	// change later 
-	assign address = input_val;
+  assign address = (input_val - 32'd1024) & (32'b11111111_11111111_11111111_11111100);
 
 endmodule 

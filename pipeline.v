@@ -77,7 +77,7 @@ module pipeline #(parameter LEN = 32)(input clock, input reset);
     EXEMEM #(LEN) exememreg( .clock(clock), .reset(reset), .wb_en(idexe_wb_en_out), 
             .mem_write(idexe_mem_write_out), .mem_read(idexe_mem_read_out), 
             .pc(idexe_pc_out), .instruction(idexe_instruction_out),
-            .src2_val(idexe_reg2_out), .dest(idexe_dest), .alu_result(alu_result),
+            .src2_val(idexe_reg2_out), .dest(idexe_dest_out), .alu_result(alu_result),
             .pc_out(exemem_pc_out), .instruction_out(exemem_instruction_out),
             .wb_en_out(exemem_wb_en_out), .mem_write_out(exemem_mem_write_out),
             .mem_read_out(exemem_mem_read_out), .src2_val_out(exemem_src2_val_out), 
