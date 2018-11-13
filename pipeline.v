@@ -93,7 +93,7 @@ module pipeline #(parameter LEN = 32)(input clock, input reset);
         .memory_result(memory_result));
 
 
-    MEMWB #(LEN) memwbreg(.clock(clock), .reset(reset), .wb_en(exemem_wb_en_out), .mem_r_en(exemem_mem_write_out), .memory_data(memory_result), .dest(exemem_dest_out), 
+    MEMWB #(LEN) memwbreg(.clock(clock), .reset(reset), .wb_en(exemem_wb_en_out), .mem_r_en(exemem_mem_read_out), .memory_data(memory_result), .dest(exemem_dest_out), 
     .alu_result_out(memwb_alu_result), 
     .alu_result(exemem_alu_result_out), 
     .memory_result_out(memwb_memory_result),
