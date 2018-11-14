@@ -12,10 +12,10 @@ module ALU (
 			4'b0101: output_val <= input_val1 | input_val2;  //bitwise or
 			4'b0110: output_val <= ~(input_val1 | input_val2); // check NOR
 			4'b0111: output_val <= input_val1 ^ input_val2; // xor
-			4'b1000: output_val <= input_val1 <<< input_val2; // SLA - shift left arithmatic
-			4'b1001: output_val <= input_val1 >>> input_val2; // SRA - shift right arithmetic
+			4'b1000: output_val <= input_val1 << input_val2; // SLA - shift left arithmatic
+			4'b1001: output_val <= $signed(input_val1) >>> input_val2; // SRA - shift right arithmetic
 			4'b1010: output_val <= input_val1 >> input_val2; // SRL - shift right logical
-			4'b1011: output_val <= input_val1 << input_val2; // SLL - shift left logical
+			//4'b1000: output_val <= input_val1 << input_val2; // SLL - shift left logical
 			default: output_val <= 32'd0; 
 		endcase
 	end 
