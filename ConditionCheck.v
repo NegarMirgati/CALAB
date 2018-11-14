@@ -12,7 +12,7 @@ module ConditionCheck(
 	    branch_taken = (val1 == 32'd0) ? 1'd1 : 1'd0;
 	   
 	  else if (branch_type == 2'b10)  /* BNE */
-	    branch_taken = (val1 == src2_val ) ? 1'd1 : 1'd0;
+	    branch_taken = (val1 != src2_val ) ? 1'd1 : 1'd0;
 	  else
 	     branch_taken = 1'd0;
 	end

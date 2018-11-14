@@ -19,7 +19,9 @@ module Register_file (
             	regFile[i] = i;
 		end
 		else begin 
-			if (Write_EN) regFile[dest] = Write_val;
+			if(dest == 5'd0 && Write_EN)
+				regFile[dest] = 32'd0;
+			else if(Write_EN) regFile[dest] = Write_val;
 		end
 	end
 		
