@@ -5,18 +5,22 @@ module HazardDU (
 	input exe_wb_en, 
 	input [4:0] mem_dest, 
 	input mem_wb_en, 
-	output hazard_detected
+	output reg hazard_detected
 	); 
 	
 	always @ (*) begin 
-        if(mem_wb_en==1'b1) begin 
-        	if((src1==mem_dest) || (src2==mem_dest)) hazard_detected = 1'b1;
+	      hazard_detected = 1'b0;
+	      if(mem_dest != 5'd0) begin
+          if(mem_wb_en==1'b1) begin 
+        	   if((src1==mem_dest) || (src2==mem_dest)) hazard_detected = 1'b1;
         end 
-        else if(exe_wb_en==1'b1) begin 
+      end
+      
+      if(exe_dest != 5'd0) begin
+        if(exe_wb_en==1'b1) begin 
         	if((src1==exe_dest) || (src2==exe_dest)) hazard_detected = 1'b1;
         end 
-        else hazard_detected = 1'b0;
-
+    end
     end 
 	
 endmodule 

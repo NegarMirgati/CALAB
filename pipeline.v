@@ -49,7 +49,7 @@ module pipeline #(parameter LEN = 32)(input clock, input reset);
     wire [31:0] result_wb;
 
 
-    wite hazard_detected;
+    wire hazard_detected;
 
     assign flush = branch_taken;
 
