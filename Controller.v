@@ -129,7 +129,7 @@ module Controller(input [5:0] opcode, output reg[1:0] branch_type, output reg [3
 			 mem_read = 1'b0;
 			 mem_write = 1'b0;
 			 branch_type = 2'b11;
-			 is_immediate = 1'b0;
+			 is_immediate = 1'b1;
 			 end
 			 
 			default : begin 

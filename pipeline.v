@@ -1,4 +1,4 @@
-module pipeline #(parameter LEN = 32)(input clock, input reset);
+module pipeline #(parameter LEN = 32)(input clock, input reset, input enable_forward);
 
     // instruction fetch wires
     wire [LEN-1:0] instruction, pc;
@@ -25,7 +25,7 @@ module pipeline #(parameter LEN = 32)(input clock, input reset);
     wire [4:0] idexe_dest_out;
 
     // EXE wires
-    wire [31:0] alu_result;
+    wire [31:0] alu_result, exe_src2_val_out;
     wire [31:0] branch_address;
     wire branch_taken;
 
@@ -49,13 +49,20 @@ module pipeline #(parameter LEN = 32)(input clock, input reset);
     wire [31:0] result_wb;
 
 
+    wire hazard_detected;
+    wire [1:0] src2_val_selector, val1_selector, val2_selector;
     assign flush = branch_taken;
 
-    IF instFetch(.clock(clock), .reset(reset), .instruction(instruction), .branch_address(branch_address), .branch_taken(branch_taken), .pc_value(pc)); 
-    
-    IFID #(LEN) ifidreg(.clock(clock), .reset(reset), .pc(pc), .instruction(instruction), .pc_out(ifid_pc_out), .instruction_out(ifid_instruction_out), .flush(flush));
 
-    ID instDecode(.clock(clock), .reset(reset), .instruction(ifid_instruction_out), .PC(ifid_pc_out), .write_enable(wb_writeback_en), .dest_wb(dest_wb), .result_wb(result_wb), .exe_cmd(exe_cmd), .mem_write(mem_write), .mem_read(mem_read), .br_type(branch_type), .writeback_en(wb_en), .alu_inp1(alu_inp1), .alu_inp2(alu_inp2), .idexe_dest(idexe_dest), .reg2(reg_out2));
+    HazardDU hdu (.src1(ifid_instruction_out[25:21]), .src2(ifid_instruction_out[20:16]), .exe_dest(idexe_dest_out), .exe_wb_en(idexe_wb_en_out), .mem_dest(exemem_dest_out), .mem_wb_en(exemem_wb_en_out), .hazard_detected(hazard_detected));
+
+    ForwardingUnit(.src1(ifid_instruction_out[25:21]), .src2(ifid_instruction_out[20:16]), .idexe_dest(idexe_dest_out), .exemem_dest(exemem_dest_out), .wb_dest(memwb_dest), .mem_wb_en(exemem_wb_en_out), .wb_wb_en(memwb_wb_en_out), .src2_val_selector(src2_val_selector), .val1_selector(val1_selector), .val2_selector(val2_selector), .enable_forward(enable_forward));
+
+    IF instFetch(.clock(clock), .reset(reset), .instruction(instruction), .branch_address(branch_address), .branch_taken(branch_taken), .pc_value(pc), .hazard_detected(hazard_detected)); 
+    
+    IFID #(LEN) ifidreg(.clock(clock), .reset(reset), .pc(pc), .instruction(instruction), .pc_out(ifid_pc_out), .instruction_out(ifid_instruction_out), .flush(flush), .freez(hazard_detected));
+
+    ID instDecode(.clock(clock), .reset(reset), .instruction(ifid_instruction_out), .PC(ifid_pc_out), .write_enable(wb_writeback_en), .dest_wb(dest_wb), .result_wb(result_wb), .exe_cmd(exe_cmd), .mem_write(mem_write), .mem_read(mem_read), .br_type(branch_type), .writeback_en(wb_en), .alu_inp1(alu_inp1), .alu_inp2(alu_inp2), .idexe_dest(idexe_dest), .reg2(reg_out2), .freez(hazard_detected));
 
     IDEXE #(LEN) idexereg(.clock(clock), .reset(reset), .pc(ifid_pc_out), 
                 .instruction(ifid_instruction_out), 
@@ -71,13 +78,13 @@ module pipeline #(parameter LEN = 32)(input clock, input reset);
     EXE execution_stage (.branch_type(idexe_branch_type_out), .src2_val(idexe_reg2_out),
                 .val2(idexe_alu_inp2_out), .val1(idexe_alu_inp1_out), 
                 .pc(idexe_pc_out), .exe_cmd(idexe_exe_cmd_out), .alu_result(alu_result), .branch_address(branch_address),
-                .branch_taken(branch_taken)); 
+                .branch_taken(branch_taken), .mem_alu_result(exemem_alu_result_out), .wb_data(result_wb), .src2_val_out(exe_src2_val_out)); 
 
                             
     EXEMEM #(LEN) exememreg( .clock(clock), .reset(reset), .wb_en(idexe_wb_en_out), 
             .mem_write(idexe_mem_write_out), .mem_read(idexe_mem_read_out), 
             .pc(idexe_pc_out), .instruction(idexe_instruction_out),
-            .src2_val(idexe_reg2_out), .dest(idexe_dest_out), .alu_result(alu_result),
+            .src2_val(exe_src2_val_out), .dest(idexe_dest_out), .alu_result(alu_result),
             .pc_out(exemem_pc_out), .instruction_out(exemem_instruction_out),
             .wb_en_out(exemem_wb_en_out), .mem_write_out(exemem_mem_write_out),
             .mem_read_out(exemem_mem_read_out), .src2_val_out(exemem_src2_val_out), 
@@ -90,7 +97,8 @@ module pipeline #(parameter LEN = 32)(input clock, input reset);
         .mem_r_en(exemem_mem_read_out), 
         .alu_result(exemem_alu_result_out), 
         .ST_value(exemem_src2_val_out), 
-        .memory_result(memory_result));
+        .memory_result(memory_result), 
+        .src2_val_selector(src2_val_selector), .val1_selector(val1_selector), .val2_selector(val2_selector));
 
 
     MEMWB #(LEN) memwbreg(.clock(clock), .reset(reset), .wb_en(exemem_wb_en_out), .mem_r_en(exemem_mem_read_out), .memory_data(memory_result), .dest(exemem_dest_out), 
