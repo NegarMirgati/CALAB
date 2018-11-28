@@ -51,12 +51,12 @@ module pipeline #(parameter LEN = 32)(input clock, input reset, input en_fwd);
 
     wire hazard_detected;
     wire [1:0] src2_val_selector, val1_selector, val2_selector;
-    wire is_immidiate;
+    wire enable_forward;
 
     assign flush = branch_taken;
 
 
-    HazardDU hdu (.src1(ifid_instruction_out[25:21]), .src2(ifid_instruction_out[20:16]), .exe_dest(idexe_dest_out), .exe_wb_en(idexe_wb_en_out), .mem_dest(exemem_dest_out), .mem_wb_en(exemem_wb_en_out),.exe_is_immidiate(), .mem_mem_r_en(memwb_mem_r_en), .en_fwd(en_fwd), .hazard_detected(hazard_detected));
+    HazardDU hdu (.src1(ifid_instruction_out[25:21]), .src2(ifid_instruction_out[20:16]), .exe_dest(idexe_dest_out), .exe_wb_en(idexe_wb_en_out), .mem_dest(exemem_dest_out), .mem_wb_en(exemem_wb_en_out), .two_regs(two_regs), .hazard_detected(hazard_detected));
 
 
     ForwardingUnit(.src1(ifid_instruction_out[25:21]), .src2(ifid_instruction_out[20:16]), .idexe_dest(idexe_dest_out), .exemem_dest(exemem_dest_out), .wb_dest(memwb_dest), .mem_wb_en(exemem_wb_en_out), .wb_wb_en(memwb_wb_en_out), .src2_val_selector(src2_val_selector), .val1_selector(val1_selector), .val2_selector(val2_selector), .enable_forward(enable_forward));
@@ -66,7 +66,7 @@ module pipeline #(parameter LEN = 32)(input clock, input reset, input en_fwd);
     
     IFID #(LEN) ifidreg(.clock(clock), .reset(reset), .pc(pc), .instruction(instruction), .pc_out(ifid_pc_out), .instruction_out(ifid_instruction_out), .flush(flush), .freez(hazard_detected));
 
-    ID instDecode(.clock(clock), .reset(reset), .instruction(ifid_instruction_out), .PC(ifid_pc_out), .write_enable(wb_writeback_en), .dest_wb(dest_wb), .result_wb(result_wb), .exe_cmd(exe_cmd), .mem_write(mem_write), .mem_read(mem_read), .br_type(branch_type), .writeback_en(wb_en), .alu_inp1(alu_inp1), .alu_inp2(alu_inp2), .idexe_dest(idexe_dest), .reg2(reg_out2), .freez(hazard_detected), .is_immediate_out(exe_is_immediate));
+    ID instDecode(.clock(clock), .reset(reset), .instruction(ifid_instruction_out), .PC(ifid_pc_out), .write_enable(wb_writeback_en), .dest_wb(dest_wb), .result_wb(result_wb), .exe_cmd(exe_cmd), .mem_write(mem_write), .mem_read(mem_read), .br_type(branch_type), .writeback_en(wb_en), .alu_inp1(alu_inp1), .alu_inp2(alu_inp2), .idexe_dest(idexe_dest), .reg2(reg_out2), .freez(hazard_detected), .two_regs(two_regs));
 
     IDEXE #(LEN) idexereg(.clock(clock), .reset(reset), .pc(ifid_pc_out), 
                 .instruction(ifid_instruction_out), 
