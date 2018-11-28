@@ -56,10 +56,10 @@ module pipeline #(parameter LEN = 32)(input clock, input reset, input en_fwd);
     assign flush = branch_taken;
 
 
-    HazardDU hdu (.src1(ifid_instruction_out[25:21]), .src2(ifid_instruction_out[20:16]), .exe_dest(idexe_dest_out), .exe_wb_en(idexe_wb_en_out), .mem_dest(exemem_dest_out), .mem_wb_en(exemem_wb_en_out), .two_regs(two_regs), .hazard_detected(hazard_detected));
+    HazardDU hdu (.src1(ifid_instruction_out[25:21]), .src2(ifid_instruction_out[20:16]), .exe_dest(idexe_dest_out), .exe_wb_en(idexe_wb_en_out), .mem_dest(exemem_dest_out), .mem_wb_en(exemem_wb_en_out), .two_regs(two_regs), .hazard_detected(hazard_detected), .en_fwd(en_fwd), .mem_r_en(idexe_mem_read_out));
 
 
-    ForwardingUnit(.src1(ifid_instruction_out[25:21]), .src2(ifid_instruction_out[20:16]), .idexe_dest(idexe_dest_out), .exemem_dest(exemem_dest_out), .wb_dest(memwb_dest), .mem_wb_en(exemem_wb_en_out), .wb_wb_en(memwb_wb_en_out), .src2_val_selector(src2_val_selector), .val1_selector(val1_selector), .val2_selector(val2_selector), .enable_forward(enable_forward));
+    ForwardingUnit(.src1(ifid_instruction_out[25:21]), .src2(ifid_instruction_out[20:16]), .idexe_dest(idexe_dest_out), .exemem_dest(exemem_dest_out), .wb_dest(memwb_dest), .mem_wb_en(exemem_wb_en_out), .wb_wb_en(memwb_wb_en_out), .src2_val_selector(src2_val_selector), .val1_selector(val1_selector), .val2_selector(val2_selector), .enable_forward(en_fwd));
 
 
     IF instFetch(.clock(clock), .reset(reset), .instruction(instruction), .branch_address(branch_address), .branch_taken(branch_taken), .pc_value(pc), .hazard_detected(hazard_detected)); 

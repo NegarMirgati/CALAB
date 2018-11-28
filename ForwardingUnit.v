@@ -16,7 +16,7 @@ module ForwardingUnit(
 		src2_val_selector = 2'b00; 
 	    val1_selector = 2'b00; 
 	    val2_selector = 2'b00; 
-	    if(enable_forward) begin 
+	    if(enable_forward==1'b1) begin 
 	    	if(src1==idexe_dest && mem_wb_en==1'b1) val1_selector = 2'b01; 
 	    	else if(src2==idexe_dest && mem_wb_en==1'b1) val2_selector = 2'b01; 
 	    	else if(src1==wb_dest && wb_wb_en==1'b1) val1_selector = 2'b10; 
