@@ -16,7 +16,7 @@ module ID (
 	output [31:0] alu_inp2,
 	output [4:0] idexe_dest,
 	output [31:0] reg2,
-	output is_immidiate_out
+	output two_regs
 );
 
   	wire is_immediate;
@@ -46,6 +46,6 @@ module ID (
 	
 	assign alu_inp1 = reg_out1;
 	assign reg2 = reg_out2;
-	assign is_immidiate_out = is_immediate;
+	assign two_regs = (is_immediate &&  (instruction[31:26] != 6'b101001 || instruction[31:26] != 6'b100101)) ? 1'b0 : 1'b1;
 
 endmodule

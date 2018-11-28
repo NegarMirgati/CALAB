@@ -5,13 +5,15 @@ module IDEXE #(parameter len)(input clock, input reset, input [len-1:0] pc, inpu
                               input [31:0] reg2,
                               input [31:0] alu_inp1, alu_inp2,
                               input [4:0] dest, 
+                              input two_regs,
                               output [len-1:0] pc_out, output [len-1:0] instruction_out,
                               output wb_en_out, mem_read_out, mem_write_out,
                               output [1:0] branch_type_out,
                               output [3:0] exe_cmd_out,
                               output [31:0] reg2_out,
                               output [31:0] alu_inp1_out, alu_inp2_out,
-                              output [4:0] dest_out);
+                              output [4:0] dest_out,
+                              output two_regs_out);
 
     register_f #(32) IDEXE_PC(clock, reset, flush, pc, pc_out);
     register_f #(32) IDEXE_INST(clock, reset, flush, instruction, instruction_out);
@@ -24,6 +26,7 @@ module IDEXE #(parameter len)(input clock, input reset, input [len-1:0] pc, inpu
     register_f #(32) alu_inp1_reg(.clock(clock), .reset(reset),.flush(flush), .input_value(alu_inp1), .output_value(alu_inp1_out));
     register_f #(32) alu_inp2_reg(.clock(clock), .reset(reset),.flush(flush), .input_value(alu_inp2), .output_value(alu_inp2_out));
     register_f #(5) dest_reg(.clock(clock), .reset(reset),.flush(flush), .input_value(dest), .output_value(dest_out));
+    register_f #(1) two_regs_reg (.clock(clock), .reset(reset),.flush(flush), .input_value(two_regs), .output_value(two_regs_out));
 
 
 endmodule
