@@ -52,6 +52,7 @@ module pipeline #(parameter LEN = 32)(input clock, input reset, input en_fwd);
     wire hazard_detected;
     wire [1:0] src2_val_selector, val1_selector, val2_selector;
     wire idexe_two_regs_out;
+	 wire  id_is_immediate_out;
 
     assign flush = branch_taken;
 
@@ -66,7 +67,7 @@ module pipeline #(parameter LEN = 32)(input clock, input reset, input en_fwd);
     
     IFID #(LEN) ifidreg(.clock(clock), .reset(reset), .pc(pc), .instruction(instruction), .pc_out(ifid_pc_out), .instruction_out(ifid_instruction_out), .flush(flush), .freez(hazard_detected));
 
-    ID instDecode(.clock(clock), .reset(reset), .instruction(ifid_instruction_out), .PC(ifid_pc_out), .write_enable(wb_writeback_en), .dest_wb(dest_wb), .result_wb(result_wb), .exe_cmd(exe_cmd), .mem_write(mem_write), .mem_read(mem_read), .br_type(branch_type), .writeback_en(wb_en), .alu_inp1(alu_inp1), .alu_inp2(alu_inp2), .idexe_dest(idexe_dest), .reg2(reg_out2), .freez(hazard_detected), .two_regs(two_regs));
+    ID instDecode(.clock(clock), .reset(reset), .instruction(ifid_instruction_out), .PC(ifid_pc_out), .write_enable(wb_writeback_en), .dest_wb(dest_wb), .result_wb(result_wb), .exe_cmd(exe_cmd), .mem_write(mem_write), .mem_read(mem_read), .br_type(branch_type), .writeback_en(wb_en), .alu_inp1(alu_inp1), .alu_inp2(alu_inp2), .idexe_dest(idexe_dest), .reg2(reg_out2), .freez(hazard_detected), .two_regs(two_regs), .is_immediate(id_is_immediate_out));
 
     IDEXE #(LEN) idexereg(.clock(clock), .reset(reset), .pc(ifid_pc_out), 
                 .instruction(ifid_instruction_out), 
@@ -74,7 +75,7 @@ module pipeline #(parameter LEN = 32)(input clock, input reset, input en_fwd);
                 .exe_cmd(exe_cmd), .reg2(reg_out2), .alu_inp1(alu_inp1), .alu_inp2(alu_inp2), 
                 .dest(idexe_dest), .pc_out(idexe_pc_out), .instruction_out(idexe_instruction_out),
                 .wb_en_out(idexe_wb_en_out), .mem_read_out(idexe_mem_read_out), 
-                .mem_write_out(idexe_mem_write_out), .two_regs(two_regs),
+                .mem_write_out(idexe_mem_write_out), .two_regs(id_is_immediate_out),
                 .branch_type_out(idexe_branch_type_out),.exe_cmd_out(idexe_exe_cmd_out),
                 .reg2_out(idexe_reg2_out), .alu_inp1_out(idexe_alu_inp1_out), .alu_inp2_out(idexe_alu_inp2_out),.dest_out(idexe_dest_out)
                 , .two_regs_out(idexe_two_regs_out)

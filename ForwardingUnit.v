@@ -21,11 +21,12 @@ module ForwardingUnit(
 	    	  if(src1==exemem_dest && mem_wb_en==1'b1) val1_selector = 2'b01; 
 	    	  else if(src1==wb_dest && wb_wb_en==1'b1) val1_selector = 2'b10;
 	       
-	       if((src2==exemem_dest && mem_wb_en==1'b1) && two_regs == 1'b1) val2_selector = 2'b01; 
-         else if((src2==wb_dest && wb_wb_en==1'b1) && two_regs == 1'b1) val2_selector = 2'b10;
+	       if((src2==exemem_dest && mem_wb_en==1'b1) && two_regs == 1'b0) val2_selector = 2'b01; 
+         else if((src2==wb_dest && wb_wb_en==1'b1) && two_regs == 1'b0) val2_selector = 2'b10;
            
          if(idexe_dest==exemem_dest && mem_wb_en==1'b1) src2_val_selector = 2'b01; 
          else if(idexe_dest==wb_dest && wb_wb_en==1'b1) src2_val_selector = 2'b10;
+
 	    end 
     end 
 
