@@ -1,4 +1,5 @@
-module pipeline #(parameter LEN = 32)(input clock, input reset, input en_fwd);
+module pipeline #(parameter LEN = 32)(input clock, input reset, input en_fwd, inout[15:0] SRAM_DQ, output [17:0] SRAM_ADDR,
+                                      output SRAM_UB_N, SRAM_LB_N, SRAM_WE_N, SRAM_CE_N, SRAM_OE_N);
 
     // instruction fetch wires
     wire [LEN-1:0] instruction, pc;
@@ -44,7 +45,9 @@ module pipeline #(parameter LEN = 32)(input clock, input reset, input en_fwd);
     wire memwb_mem_r_en;
     wire [4:0] memwb_dest;
     wire memwb_wb_en_out;
-
+    wire sram_freeze;
+    wire mem_wb_en_out;
+    
     // WB wires 
     wire [31:0] result_wb;
 
@@ -65,9 +68,9 @@ module pipeline #(parameter LEN = 32)(input clock, input reset, input en_fwd);
 
     IF instFetch(.clock(clock), .reset(reset), .instruction(instruction), .branch_address(branch_address), .branch_taken(branch_taken), .pc_value(pc), .hazard_detected(hazard_detected)); 
     
-    IFID #(LEN) ifidreg(.clock(clock), .reset(reset), .pc(pc), .instruction(instruction), .pc_out(ifid_pc_out), .instruction_out(ifid_instruction_out), .flush(flush), .freez(hazard_detected));
+    IFID #(LEN) ifidreg(.clock(clock), .reset(reset), .pc(pc), .instruction(instruction), .pc_out(ifid_pc_out), .instruction_out(ifid_instruction_out), .flush(flush), .freez(hazard_detected || sram_freeze));
 
-    ID instDecode(.clock(clock), .reset(reset), .instruction(ifid_instruction_out), .PC(ifid_pc_out), .write_enable(wb_writeback_en), .dest_wb(dest_wb), .result_wb(result_wb), .exe_cmd(exe_cmd), .mem_write(mem_write), .mem_read(mem_read), .br_type(branch_type), .writeback_en(wb_en), .alu_inp1(alu_inp1), .alu_inp2(alu_inp2), .idexe_dest(idexe_dest), .reg2(reg_out2), .freez(hazard_detected), .two_regs(two_regs), .is_immediate(id_is_immediate_out));
+    ID instDecode(.clock(clock), .reset(reset), .instruction(ifid_instruction_out), .PC(ifid_pc_out), .write_enable(wb_writeback_en), .dest_wb(dest_wb), .result_wb(result_wb), .exe_cmd(exe_cmd), .mem_write(mem_write), .mem_read(mem_read), .br_type(branch_type), .writeback_en(wb_en), .alu_inp1(alu_inp1), .alu_inp2(alu_inp2), .idexe_dest(idexe_dest), .reg2(reg_out2), .freez(hazard_detected || sram_freeze), .two_regs(two_regs), .is_immediate(id_is_immediate_out));
 
     IDEXE #(LEN) idexereg(.clock(clock), .reset(reset), .pc(ifid_pc_out), 
                 .instruction(ifid_instruction_out), 
@@ -78,7 +81,7 @@ module pipeline #(parameter LEN = 32)(input clock, input reset, input en_fwd);
                 .mem_write_out(idexe_mem_write_out), .two_regs(id_is_immediate_out),
                 .branch_type_out(idexe_branch_type_out),.exe_cmd_out(idexe_exe_cmd_out),
                 .reg2_out(idexe_reg2_out), .alu_inp1_out(idexe_alu_inp1_out), .alu_inp2_out(idexe_alu_inp2_out),.dest_out(idexe_dest_out)
-                , .two_regs_out(idexe_two_regs_out)
+                , .two_regs_out(idexe_two_regs_out), .freez(sram_freeze)
       );
                           
 
@@ -97,7 +100,7 @@ module pipeline #(parameter LEN = 32)(input clock, input reset, input en_fwd);
             .wb_en_out(exemem_wb_en_out), .mem_write_out(exemem_mem_write_out),
             .mem_read_out(exemem_mem_read_out), .src2_val_out(exemem_src2_val_out), 
             .dest_out(exemem_dest_out),
-            .alu_result_out(exemem_alu_result_out));
+            .alu_result_out(exemem_alu_result_out), .freez(sram_freeze));
 
     MEM mem_state(.clock(clock), 
         .reset(reset),
@@ -105,15 +108,20 @@ module pipeline #(parameter LEN = 32)(input clock, input reset, input en_fwd);
         .mem_r_en(exemem_mem_read_out), 
         .alu_result(exemem_alu_result_out), 
         .ST_value(exemem_src2_val_out), 
-        .memory_result(memory_result));
+        .wb_en(exemem_wb_en_out),
+        .memory_result(memory_result),
+        .sram_freeze(sram_freeze),
+        .mem_wb_en_out(mem_wb_en_out),
+        .SRAM_DQ(SRAM_DQ), 
+        .SRAM_ADDR(SRAM_ADDR), .SRAM_UB_N(SRAM_UB_N), .SRAM_LB_EN(SRAM_LB_EN), .SRAM_CE_N(SRAM_CE_N), .SRAM_OE_N(SRAM_OE_N), .SRAM_WE_N(SRAM_WE_N));
 
-    MEMWB #(LEN) memwbreg(.clock(clock), .reset(reset), .wb_en(exemem_wb_en_out), .mem_r_en(exemem_mem_read_out), .memory_data(memory_result), .dest(exemem_dest_out), 
+    MEMWB #(LEN) memwbreg(.clock(clock), .reset(reset), .wb_en(mem_wb_en_out), .mem_r_en(exemem_mem_read_out), .memory_data(memory_result), .dest(exemem_dest_out), 
     .alu_result_out(memwb_alu_result), 
     .alu_result(exemem_alu_result_out), 
     .memory_result_out(memwb_memory_result),
     .mem_r_en_out(memwb_mem_r_en), 
     .wb_en_out(memwb_wb_en_out),
-    .dest_out(memwb_dest));
+    .dest_out(memwb_dest), .freez(sram_freeze));
     
 
     WB write_back_stage(.mem_r_en(memwb_mem_r_en), 
