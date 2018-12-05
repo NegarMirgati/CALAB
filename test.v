@@ -2,7 +2,7 @@
 
 module test();
 
-    reg clk=0, rst=0, en_fwd = 1;
+    reg clk=0, rst=0, en_fwd = 0;
 
     pipeline #(32) pl(clk, rst, en_fwd);
 

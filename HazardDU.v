@@ -30,7 +30,7 @@ module HazardDU (
     	end 
     	else if(en_fwd == 1'b1) begin
 	    	if(mem_r_en == 1'b1) begin
-	        	if((src1==mem_dest) || (src2==mem_dest) && two_regs == 1'b1) hazard_detected = 1'b1;
+	        	if(((src1==mem_dest) || (src2==mem_dest)) && two_regs == 1'b1) hazard_detected = 1'b1;
     			else if ((src1==mem_dest) && two_regs == 1'b0) hazard_detected = 1'b1;
 	    	end
 	    end

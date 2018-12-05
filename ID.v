@@ -16,10 +16,10 @@ module ID (
 	output [31:0] alu_inp2,
 	output [4:0] idexe_dest,
 	output [31:0] reg2,
-	output two_regs
+	output two_regs,
+	output is_immediate
 );
 
-  	wire is_immediate;
   	wire [31:0] reg_out1, reg_out2;
   	wire [31:0] se_out;
   	wire mem_write_muxed,mem_read_muxed, writeback_en_muxed;
@@ -46,6 +46,6 @@ module ID (
 	
 	assign alu_inp1 = reg_out1;
 	assign reg2 = reg_out2;
-	assign two_regs = (is_immediate &&  (instruction[31:26] != 6'b101001 || instruction[31:26] != 6'b100101)) ? 1'b0 : 1'b1;
+	assign two_regs = (is_immediate &&  (instruction[31:26] != 6'b101001 && instruction[31:26] != 6'b100101)) ? 1'b0 : 1'b1;
 
 endmodule
