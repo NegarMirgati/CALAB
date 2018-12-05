@@ -307,5 +307,6 @@ wire [3:0] test_exe_cmd;
 wire [1:0] test_branch_type;
 wire[4:0] test_src1, test_src2;
 
-pipeline p(.clock(CLOCK_50), .reset(SW[0]), .en_fwd(SW[3]));
+pipeline p(.clock(CLOCK_50), .reset(SW[0]), .en_fwd(SW[3]), .SRAM_DQ(SRAM_DQ), 
+.SRAM_ADDR(SRAM_ADDR), .SRAM_UB_N(SRAM_UB_N), .SRAM_LB_EN(SRAM_LB_EN), .SRAM_CE_N(SRAM_CE_N), .SRAM_OE_N(SRAM_OE_N), .SRAM_WE_N(SRAM_WE_N));
 endmodule
