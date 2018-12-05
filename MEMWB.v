@@ -12,7 +12,7 @@ module MEMWB #(parameter len) (
     output wb_en_out
 	);
 	
-	  register #(1) wb_en_reg (.clock(clock), .reset(reset), .input_value(wb_en), .output_value(wb_en_out));
+	register #(1) wb_en_reg (.clock(clock), .reset(reset), .input_value(wb_en), .output_value(wb_en_out));
     register #(1) mem_read_reg (.clock(clock), .reset(reset), .input_value(mem_r_en), .output_value(mem_r_en_out));
     register #(5) dest_reg (.clock(clock), .reset(reset), .input_value(dest), .output_value(dest_out));
     register #(32) alu_result_reg (.clock(clock), .reset(reset), .input_value(alu_result), .output_value(alu_result_out));
