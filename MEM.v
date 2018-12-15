@@ -21,7 +21,7 @@ module MEM(
 
 	//DataMemory dm (.clock(clock), .reset(reset), .address(address), .write_data(ST_value), .mem_r_en(mem_r_en), .mem_w_en(mem_w_en), .data(memory_result));
 
-  MUX #(1) wb_en_mux ( .value1(wb_en), .value2(1'b0), .selector(sram_freeze), .out_val(mux_wb_en_out));
+   MUX #(1) wb_en_mux ( .value1(wb_en), .value2(1'b0), .selector(sram_freeze), .out_val(mux_wb_en_out));
 	Sram_Controller sram(.clk(clock), .rst(reset), .wr_en(mem_w_en), .rd_en(mem_r_en), .address(address), .write_data(ST_value) , .read_data(memory_result), 
 	.ready(ready) , .SRAM_DQ(SRAM_DQ), .SRAM_ADDR(SRAM_ADDR), .SRAM_UB_N(SRAM_UB_N), .SRAM_LB_N(SRAM_LB_N), .SRAM_WE_N(SRAM_WE_N), .SRAM_CE_N(SRAM_CE_N), .SRAM_OE_N(SRAM_OE_N) );
 	

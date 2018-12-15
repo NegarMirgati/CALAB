@@ -66,7 +66,7 @@ module pipeline #(parameter LEN = 32)(input clock, input reset, input en_fwd, in
     ForwardingUnit fwdu(.src1(idexe_instruction_out[25:21]), .src2(idexe_instruction_out[20:16]), .idexe_dest(idexe_dest_out), .exemem_dest(exemem_dest_out), .wb_dest(memwb_dest), .two_regs(idexe_two_regs_out),  .mem_wb_en(exemem_wb_en_out), .wb_wb_en(memwb_wb_en_out), .src2_val_selector(src2_val_selector), .val1_selector(val1_selector), .val2_selector(val2_selector), .enable_forward(en_fwd));
 
 
-    IF instFetch(.clock(clock), .reset(reset), .instruction(instruction), .branch_address(branch_address), .branch_taken(branch_taken), .pc_value(pc), .hazard_detected(hazard_detected)); 
+    IF instFetch(.clock(clock), .reset(reset), .instruction(instruction), .branch_address(branch_address), .branch_taken(branch_taken), .pc_value(pc), .hazard_detected(hazard_detected || sram_freeze)); 
     
     IFID #(LEN) ifidreg(.clock(clock), .reset(reset), .pc(pc), .instruction(instruction), .pc_out(ifid_pc_out), .instruction_out(ifid_instruction_out), .flush(flush), .freez(hazard_detected || sram_freeze));
 
@@ -113,7 +113,7 @@ module pipeline #(parameter LEN = 32)(input clock, input reset, input en_fwd, in
         .sram_freeze(sram_freeze),
         .mem_wb_en_out(mem_wb_en_out),
         .SRAM_DQ(SRAM_DQ), 
-        .SRAM_ADDR(SRAM_ADDR), .SRAM_UB_N(SRAM_UB_N), .SRAM_LB_EN(SRAM_LB_EN), .SRAM_CE_N(SRAM_CE_N), .SRAM_OE_N(SRAM_OE_N), .SRAM_WE_N(SRAM_WE_N));
+        .SRAM_ADDR(SRAM_ADDR), .SRAM_UB_N(SRAM_UB_N), .SRAM_LB_N(SRAM_LB_EN), .SRAM_CE_N(SRAM_CE_N), .SRAM_OE_N(SRAM_OE_N), .SRAM_WE_N(SRAM_WE_N));
 
     MEMWB #(LEN) memwbreg(.clock(clock), .reset(reset), .wb_en(mem_wb_en_out), .mem_r_en(exemem_mem_read_out), .memory_data(memory_result), .dest(exemem_dest_out), 
     .alu_result_out(memwb_alu_result), 

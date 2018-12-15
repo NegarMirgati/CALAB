@@ -1,4 +1,4 @@
-module register #(parameter len = 32) (input clock, 
+module register_with_enable #(parameter len = 32) (input clock, 
 	input reset,
 	input enable,
 	input [len-1:0] input_value, 

@@ -14,7 +14,7 @@ module ForwardingUnit(
 );
 
 	always @ (*) begin 
-		 src2_val_selector = 2'b00; 
+		  src2_val_selector = 2'b00; 
 	    val1_selector = 2'b00; 
 	    val2_selector = 2'b00; 
 	    if(enable_forward==1'b1) begin 
