@@ -28,7 +28,7 @@ module MEM(
    	cache_controller cacheController( .clk(clock), .rst(reset), .address(address), 
    							.wdata(ST_value), .MEM_R_EN(mem_r_en), .MEM_W_EN(mem_w_en), .rdata(memory_result), 
    							.ready(cache_ready), .sram_address(sram_address), .sram_wdata(sram_wdata), .write(cache_write), 
-   							.sram_rdata(sram_rdata), .ram_ready(ready), .sram_mem_r_en(sram_mem_r_en)
+   							.sram_rdata(sram_rdata), .sram_ready(ready), .sram_mem_r_en(sram_mem_r_en)
 	);
 
 	Sram_Controller sram(.clk(clock), .rst(reset), .wr_en(cache_write), .rd_en(sram_mem_r_en), 
