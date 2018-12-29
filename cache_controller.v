@@ -29,12 +29,12 @@ module cache_controller (
 
 	assign ready = hit || sram_ready;
 
-	assign tag_addr = address[18:9]; 
-	assign index = address[9:3];
+	assign tag_addr = address[17:9]; 
+	assign index = address[8:3];
 	
 	assign hit_0 = (tag_addr==tag_cache_way_0[index]) && way_0[index][64];
 	assign hit_1 = (tag_addr==tag_cache_way_1[index]) && way_1[index][64];
-	assign hit = (hit_1 || hit_0) && (!MEM_W_EN);
+	assign hit = (hit_1 || hit_0) && (MEM_W_EN == 1'b0);
 
 	assign rdata_64_bit = (hit_0)? way_0[index][63:0]: (hit_1)? way_1[index][63:0]: sram_rdata;
 	assign rdata = (address[2])? rdata_64_bit[63:32] : rdata_64_bit[31:0];
@@ -49,7 +49,7 @@ module cache_controller (
 		end 
 	end 
 
-	always@(posedge clk) begin 
+	always@(*) begin 
 		sram_mem_r_en = 1'b0;
 		write = 1'b0;
 		if(!hit && MEM_R_EN) begin 
@@ -74,7 +74,7 @@ module cache_controller (
 				else way_0[index][64] = 0; 
 			end 
 		end
-		else if(sram_ready && !hit) begin 
+		else if((sram_ready && !hit) && (MEM_R_EN == 1'b1)) begin 
 			if(LRU)  way_1[index][64] = 1; 
 			else way_0[index][64] = 1; 
 		end 

@@ -31,10 +31,10 @@ module Sram_Controller(
 
   always @(*) begin
 		
-		if(wr_en == 1'b0 && rd_en == 1'b0) ready = 1'b1;
+		if(rd_en == 1'b0 && wr_en == 1'b0) ready = 1'b1;
 		else if ((wr_en == 1'b1 || rd_en == 1'b1) && cycle==3'd5) ready = 1'b1;
 		else if ((wr_en == 1'b1 || rd_en == 1'b1) && cycle!=3'd5) ready = 1'b0;
-		else ready = 1'b0;
+		else ready = 1'b1;
 		
 	end 
 
