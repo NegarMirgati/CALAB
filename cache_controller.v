@@ -23,6 +23,7 @@ module cache_controller (
    reg [64:0] way_1 [63:0];
 	reg [8:0] tag_cache_way_0 [63:0];
 	reg [8:0] tag_cache_way_1 [63:0];
+	reg write_complete = 1'b0;
 	
 	wire [63:0] rdata_64_bit; 
 
@@ -43,7 +44,13 @@ module cache_controller (
 	assign sram_address = address;
 
 	always @(posedge clk) begin // writing data in cache
-		if(sram_ready && !hit) begin 
+		if(rst) begin
+			for(i = 0; i < 64; i = i + 1) begin
+				way_0[i][63:0] = 64'd0;
+				way_1[i][63:0] = 64'd0;
+			end
+		end
+		else if(sram_ready && !hit) begin 
 			if(LRU) begin  way_1[index][63:0] = sram_rdata; tag_cache_way_1[index] = tag_addr;  end 
 			else  begin way_0[index][63:0] = sram_rdata;    tag_cache_way_0[index] = tag_addr; end
 		end 
@@ -69,22 +76,18 @@ module cache_controller (
 			end
 		end
 		else if(MEM_W_EN) begin	
-			if(hit) begin 
-				if(hit_1) way_1[index][64] = 0; 
-				else way_0[index][64] = 0; 
-			end 
+			if(hit_1) way_1[index][64] = 0; 
+			else if(hit_0) way_0[index][64] = 0; 
 		end
 		else if((sram_ready && !hit) && (MEM_R_EN == 1'b1)) begin 
 			if(LRU)  way_1[index][64] = 1; 
 			else way_0[index][64] = 1; 
+			write_complete = 1'b1;
 		end 
-	end
-
-	always @ (posedge clk) begin 
 		if(hit_0) LRU = 1; 
 		else if(hit_1) LRU = 0; 
 		else if(sram_ready && !hit) LRU = ~LRU; 
-	end 
+	end
 	
 
 
