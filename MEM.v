@@ -17,6 +17,7 @@ module MEM(
 	wire ready, cache_ready, cache_write;
 	wire [31:0] sram_address, sram_wdata;
 	wire [63:0] sram_rdata;
+	wire mux_wb_en_out, sram_mem_r_en;
 	
 
 	AddressMapping am (.input_val(alu_result), .address(address)); 

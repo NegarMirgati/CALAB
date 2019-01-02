@@ -54,6 +54,7 @@ module pipeline #(parameter LEN = 32)(input clock, input reset, input en_fwd, in
 
     wire hazard_detected;
     wire [1:0] src2_val_selector, val1_selector, val2_selector;
+	 wire two_regs;
     wire idexe_two_regs_out;
 	 wire  id_is_immediate_out;
 
@@ -113,7 +114,7 @@ module pipeline #(parameter LEN = 32)(input clock, input reset, input en_fwd, in
         .sram_freeze(sram_freeze),
         .mem_wb_en_out(mem_wb_en_out),
         .SRAM_DQ(SRAM_DQ), 
-        .SRAM_ADDR(SRAM_ADDR), .SRAM_UB_N(SRAM_UB_N), .SRAM_LB_N(SRAM_LB_EN), .SRAM_CE_N(SRAM_CE_N), .SRAM_OE_N(SRAM_OE_N), .SRAM_WE_N(SRAM_WE_N));
+        .SRAM_ADDR(SRAM_ADDR), .SRAM_UB_N(SRAM_UB_N), .SRAM_LB_N(SRAM_LB_N), .SRAM_CE_N(SRAM_CE_N), .SRAM_OE_N(SRAM_OE_N), .SRAM_WE_N(SRAM_WE_N));
 
     MEMWB #(LEN) memwbreg(.clock(clock), .reset(reset), .wb_en(mem_wb_en_out), .mem_r_en(exemem_mem_read_out), .memory_data(memory_result), .dest(exemem_dest_out), 
     .alu_result_out(memwb_alu_result), 

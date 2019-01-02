@@ -58,7 +58,7 @@ module Sram_Controller(
 	register_with_enable #(16) half1(.clock(clk), .reset(rst), .enable(cycle==3'd2 && rd_en), .input_value(SRAM_DQ), .output_value(val_out_1));
 	register_with_enable #(16) half2(.clock(clk), .reset(rst), .enable(cycle==3'd3 && rd_en), .input_value(SRAM_DQ), .output_value(val_out_2));
 	register_with_enable #(16) half3(.clock(clk), .reset(rst), .enable(cycle==3'd4 && rd_en), .input_value(SRAM_DQ), .output_value(val_out_3));
-			
+	//assign val_out_2 = (cycle==3'd3 && rd_en) ? SRAM_DQ : 16'bzzzzzzzzzzzzzzzz ;
 	assign read_data = {val_out_3 , val_out_2, val_out_1, val_out_0};
 	
 	assign SRAM_UB_N = 1'b0;
